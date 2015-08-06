@@ -1,6 +1,7 @@
 package gr.escsoft.michaelkeskinidis.weatherforecast.modelview;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import gr.escsoft.michaelkeskinidis.weatherforecast.R;
+import gr.escsoft.michaelkeskinidis.weatherforecast.WeatherActivity;
 import gr.escsoft.michaelkeskinidis.weatherforecast.model.ForecastWeatherData;
 import gr.escsoft.michaelkeskinidis.weatherforecast.model.WeatherData;
 import gr.escsoft.michaelkeskinidis.weatherforecast.tasks.DownloadImageTask;
@@ -41,7 +43,9 @@ public class WeatherView extends RelativeLayout {
     public void setWeatherData(ForecastWeatherData weather){
         this.weatherData = weather;
         if(this.weatherData != null) {
-            new DownloadImageTask(mImgView).execute(weatherData.getWeather()[0].getIcon() + ".png");
+            if (weatherData.getWeather() != null && weatherData.getWeather().length > 0 && weatherData.getWeather()[0] != null) {
+                new DownloadImageTask(mImgView).execute(weatherData.getWeather()[0].getIcon() + ".png");
+            }
             mTxtVwDate.setText(weatherData.getDt_txt());
             mTxtVwDescription.setText(weatherData.getWeather()[0].getDescription().toUpperCase());
             mTxtVwDetails.setText("Min: " + weatherData.getMain().getTemp_min() + weatherData.getSymbol() + " - " +

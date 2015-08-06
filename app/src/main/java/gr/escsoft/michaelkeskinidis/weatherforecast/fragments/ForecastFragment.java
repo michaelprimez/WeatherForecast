@@ -16,6 +16,7 @@ import gr.escsoft.michaelkeskinidis.weatherforecast.R;
 import gr.escsoft.michaelkeskinidis.weatherforecast.adapters.WeatherArrayAdapter;
 import gr.escsoft.michaelkeskinidis.weatherforecast.adapters.WeatherFragmentPagerAdapter;
 import gr.escsoft.michaelkeskinidis.weatherforecast.model.ForecastData;
+import gr.escsoft.michaelkeskinidis.weatherforecast.model.ForecastWeatherData;
 import gr.escsoft.michaelkeskinidis.weatherforecast.model.WeatherData;
 
 public class ForecastFragment extends ListFragment implements WeatherFragmentPagerAdapter.OnUpdateForecastFragmentListener {
@@ -57,13 +58,11 @@ public class ForecastFragment extends ListFragment implements WeatherFragmentPag
 
     @Override
     public void onUpdateForecast(ForecastData forecastData) {
+
         this.forecastData.setCity(forecastData.getCity());
         this.forecastData.setList(forecastData.getList());
 
-        int countBefore = weatherAdapter.getCount();
         weatherAdapter.addAll(this.forecastData.getList());
         weatherAdapter.notifyDataSetChanged();
-        int countAfter = weatherAdapter.getCount();
-        String t = "";
     }
 }

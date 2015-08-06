@@ -11,19 +11,28 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.view.ViewPager;
 import android.support.design.widget.TabLayout;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import gr.escsoft.michaelkeskinidis.weatherforecast.activities.InfoActivity;
 import gr.escsoft.michaelkeskinidis.weatherforecast.activities.SetPreferenceActivity;
@@ -39,10 +48,12 @@ import retrofit.client.Response;
 
 public class WeatherActivity extends AppCompatActivity
                              implements OnSharedPreferenceChangeListener {
-
-    public static final String TAG_FRAG_TODAY_WEATHER = "TAG_FRAG_TODAY_WEATHER";
-    public static final String TAG_FRAG_FORECAST = "TAG_FRAG_FORECAST";
-    public static final String TAG_FRAG_MAP_WEATHER = "TAG_FRAG_MAP_WEATHER";
+    private Timer timer;
+    private TimerTask timerTask;
+    private final Handler handler = new Handler();
+    private EditText myActionEditText;
+    private MenuItem myActionMenuItem;
+    String mStrFilterWord;
 
     private static final int REQUEST_PREF_RESULT = 1;
     private static final String PREF_SHOW_WEATHER_NEAR_ME = "PREF_SHOW_WEATHER_NEAR_ME";
@@ -74,6 +85,18 @@ public class WeatherActivity extends AppCompatActivity
         setupView();
         updateWeatherBasedOnCriteria();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startTimer();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopTimerTask();
     }
 
     private void setupView(){
@@ -113,14 +136,58 @@ public class WeatherActivity extends AppCompatActivity
     }
 
     public void updateWeatherBasedOnCriteria(){
-        if ((TextUtils.isEmpty(mStrPrefCity) || mbShowWeatherNearMe) && getLocation() != null)  {
-            callWeatherAPILonLat();
-        } else if (!TextUtils.isEmpty(mStrPrefCity)){
+        if (!TextUtils.isEmpty(mStrFilterWord)){
+            mStrPrefCity = mStrFilterWord;
             callWeatherAPICity();
-        } else {
-            mStrPrefCity = "Athens";
-            callWeatherAPICity();
+        }else {
+            if ((TextUtils.isEmpty(mStrPrefCity) || mbShowWeatherNearMe) && getLocation() != null)  {
+                callWeatherAPILonLat();
+            } else if (!TextUtils.isEmpty(mStrPrefCity)){
+                callWeatherAPICity();
+            } else {
+                mStrPrefCity = "Athens";
+                callWeatherAPICity();
+            }
         }
+    }
+
+    private void updatePrefs(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mStrPrefCity = prefs.getString(PREF_CITY, "");
+        mbIsInCelsius = prefs.getBoolean(PREF_UNITS, true);
+        mbShowWeatherNearMe = prefs.getBoolean(PREF_SHOW_WEATHER_NEAR_ME, true);
+    }
+
+    public void startTimer() {
+        //set a new Timer
+        timer = new Timer();
+
+        //initialize the TimerTask's job
+        initializeTimerTask();
+
+        //schedule the timer, after the first 5000ms the TimerTask will run every 10000ms
+        timer.schedule(timerTask, 5000, 10000);
+    }
+
+    public void stopTimerTask() {
+        //stop the timer, if it's not already null
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
+
+    public void initializeTimerTask() {
+
+        timerTask = new TimerTask() {
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        updateWeatherBasedOnCriteria();
+                    }
+                });
+            }
+        };
     }
 
     public synchronized void setLocation(Location location){
@@ -141,7 +208,42 @@ public class WeatherActivity extends AppCompatActivity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_weather, menu);
 
-        return true;    // super.onCreateOptionsMenu(menu);
+        // Here we get the action view we defined
+        myActionMenuItem = menu.findItem(R.id.Itm_SearchAction_Menu);
+        View actionView = myActionMenuItem.getActionView();
+
+        // We then get the edit text view that is part of the action view
+        if(actionView != null) {
+            myActionEditText = (EditText) actionView.findViewById(R.id.myActionEditText);
+            if(myActionEditText != null) {
+                myActionEditText.addTextChangedListener(new TextWatcher() {
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        String strWord = myActionEditText.getText().toString();
+                        if (TextUtils.isEmpty(strWord)) {
+                            mStrFilterWord = "";
+                            updatePrefs();
+                        } else {
+                            mStrFilterWord = strWord.toUpperCase(Locale.ENGLISH);
+                        }
+                        updateWeatherBasedOnCriteria();
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
+            }
+        }
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

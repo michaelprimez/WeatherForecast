@@ -55,7 +55,6 @@ public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        // Generate title based on item position
         return tabTitles[position];
     }
 
@@ -72,19 +71,25 @@ public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
     }
 
     public void updateTodayWeatherData(WeatherData weatherData){
-        this.todayWeatherData = weatherData;
-        notifyDataSetChanged();
+        if (weatherData != null) {
+            this.todayWeatherData = weatherData;
+            notifyDataSetChanged();
+        }
     }
 
     public void updateForecastData(ForecastData forecastData){
-        this.forecastData.setList(forecastData.getList());
-        this.forecastData.setCity(forecastData.getCity());
-        notifyDataSetChanged();
+        if (forecastData != null) {
+            this.forecastData.setList(forecastData.getList());
+            this.forecastData.setCity(forecastData.getCity());
+            notifyDataSetChanged();
+        }
     }
 
     public void updateMapData(WeatherData weatherDataList){
-        this.todayWeatherData = weatherDataList;
-        notifyDataSetChanged();
+        if (weatherDataList != null) {
+            this.todayWeatherData = weatherDataList;
+            notifyDataSetChanged();
+        }
     }
 
     @Override

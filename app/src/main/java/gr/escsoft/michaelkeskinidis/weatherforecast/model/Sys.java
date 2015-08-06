@@ -62,15 +62,12 @@ public class Sys implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-//        dest.writeParcelable(sys, PARCELABLE_WRITE_RETURN_VALUE);
         dest.writeString(country);
         dest.writeLong(sunrise);
         dest.writeLong(sunset);
     }
 
     public Sys(Parcel in){
-
-//        sys = in.readParcelable(Sys.class.getClassLoader());
         country = in.readString();
         sunrise = in.readLong();
         sunset = in.readLong();

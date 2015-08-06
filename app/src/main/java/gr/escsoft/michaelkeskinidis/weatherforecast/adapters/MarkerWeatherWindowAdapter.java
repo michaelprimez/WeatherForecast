@@ -79,29 +79,4 @@ public class MarkerWeatherWindowAdapter implements InfoWindowAdapter {
         }
         return markerContents;
     }
-
-//    private Bitmap getWeatherBitmap(String strFileName){
-//        String urldisplay = "http://openweathermap.org/img/w/" + strFileName;
-//        Bitmap mIcon = null;
-//        InputStream in = null;
-//        try {
-//            in = new java.net.URL(urldisplay).openStream();
-//            mIcon = BitmapFactory.decodeStream(in);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }finally {
-//            if(in != null) {
-//                try {
-//                    in.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//        return mIcon;
-//    }
-//    @Override
-//    public void onInfoWindowClick(Marker marker) {
-//
-//    }
 }

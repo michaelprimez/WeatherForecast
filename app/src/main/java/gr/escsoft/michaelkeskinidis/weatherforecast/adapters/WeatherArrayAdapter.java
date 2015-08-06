@@ -36,6 +36,7 @@ public class WeatherArrayAdapter extends ArrayAdapter<ForecastWeatherData> {
         } else {
             weatherView = (WeatherView) convertView;
         }
+
         weatherView.setWeatherData(weatherDataList.get(position));
         return weatherView;
     }

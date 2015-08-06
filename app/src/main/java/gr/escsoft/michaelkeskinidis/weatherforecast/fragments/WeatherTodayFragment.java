@@ -33,7 +33,6 @@ public class WeatherTodayFragment extends Fragment
     private TextView mTxtVwDescription;
     private TextView mTxtVwHumidity;
     private TextView mTxtVwDetails;
-//    private Typeface weatherFont;
 
 
     /**
@@ -75,26 +74,7 @@ public class WeatherTodayFragment extends Fragment
         mTxtVwDescription = (TextView) view.findViewById(R.id.TxtVwDescription);
         mTxtVwHumidity = (TextView) view.findViewById(R.id.TxtVwHumidity);
         mTxtVwDetails = (TextView) view.findViewById(R.id.TxtVwDetails);
-//        mTxtVwWeatherIcon.setTypeface(weatherFont);
         return view;
-    }
-
-    // Method update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(weatherData);
-//        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-//            mListener = (OnUpdateTodayWeatherFragmentListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
@@ -115,7 +95,7 @@ public class WeatherTodayFragment extends Fragment
                 String updatedOn = df.format(new Date(weatherData.getDt() * 1000));
                 mTxtVwUpdated.setText("Last update: " + updatedOn);
             }
-            if (weatherData.getWeather() != null && weatherData.getWeather().length > 0) {
+            if (weatherData.getWeather() != null && weatherData.getWeather().length > 0 && weatherData.getWeather()[0] != null) {
                 new DownloadImageTask(mTxtVwWeatherIcon).execute(weatherData.getWeather()[0].getIcon() + ".png");
                 mTxtVwDescription.setText(weatherData.getWeather()[0].getDescription().toUpperCase());
             }

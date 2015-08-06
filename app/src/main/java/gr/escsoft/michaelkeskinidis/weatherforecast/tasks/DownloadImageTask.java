@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import java.io.IOException;
@@ -25,21 +26,24 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(String... params) {
-        String urldisplay = IMG_URL + params[0];
         Bitmap mIcon = null;
-        InputStream in = null;
-        try {
-            in = new java.net.URL(urldisplay).openStream();
-            mIcon = BitmapFactory.decodeStream(in);
+        if (params != null && params.length > 0 && !TextUtils.isEmpty(params[0])) {
+            String urldisplay = IMG_URL + params[0];
+
+            InputStream in = null;
+            try {
+                in = new java.net.URL(urldisplay).openStream();
+                mIcon = BitmapFactory.decodeStream(in);
 //            mIcon = getResizedBitmap(mIcon, 128, 128);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            if(in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -48,7 +52,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap result) {
-        if (bmImage != null) {
+        if (bmImage != null && bmImage.get() != null) {
             bmImage.get().setImageBitmap(result);
         }
     }

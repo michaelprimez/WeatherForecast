@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,34 +98,45 @@ public class WeatherMapFragment extends Fragment implements WeatherFragmentPager
     public void onUpdateMap(WeatherData weatherData) {
         this.weatherData = weatherData;
 
-        new AsyncTask<String, Void, Bitmap>(){
-            @Override
-            protected Bitmap doInBackground(String... params) {
-                String urldisplay = "http://openweathermap.org/img/w/" + params[0];
-                Bitmap mIcon = null;
-                InputStream in = null;
-                try {
-                    in = new java.net.URL(urldisplay).openStream();
-                    mIcon = BitmapFactory.decodeStream(in);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }finally {
-                    if(in != null) {
+        if (weatherData != null && weatherData.getWeather() != null && weatherData.getWeather().length > 0 && weatherData.getWeather()[0] != null) {
+            new AsyncTask<String, Void, Bitmap>() {
+                @Override
+                protected Bitmap doInBackground(String... params) {
+                    Bitmap mIcon = null;
+                    if (params != null && params.length > 0 && !TextUtils.isEmpty(params[0])) {
+                        String urldisplay = "http://openweathermap.org/img/w/" + params[0];
+                        InputStream in = null;
                         try {
-                            in.close();
-                        } catch (IOException e) {
+                            in = new java.net.URL(urldisplay).openStream();
+                            mIcon = BitmapFactory.decodeStream(in);
+                        } catch (Exception e) {
                             e.printStackTrace();
+                        } finally {
+                            if (in != null) {
+                                try {
+                                    in.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                    return mIcon;
+                }
+
+                @Override
+                protected void onPostExecute(Bitmap result) {
+                    if (result != null) {
+                        if (WeatherMapFragment.this.weatherData != null &&
+                                WeatherMapFragment.this.weatherData.getWeather() != null &&
+                                WeatherMapFragment.this.weatherData.getWeather().length > 0 &&
+                                WeatherMapFragment.this.weatherData.getWeather()[0] != null) {
+                            WeatherMapFragment.this.weatherData.getWeather()[0].setBitmap(result);
                         }
                     }
                 }
-                return mIcon;
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap result) {
-                WeatherMapFragment.this.weatherData.getWeather()[0].setBitmap(result);
-            }
-        }.execute(weatherData.getWeather()[0].getIcon() + ".png");
+            }.execute(weatherData.getWeather()[0].getIcon() + ".png");
+        }
 
         googleMap.clear();
         getActivity().runOnUiThread(new Runnable() {
@@ -136,15 +148,19 @@ public class WeatherMapFragment extends Fragment implements WeatherFragmentPager
     }
 
     public Marker setMarker(){
-        LatLng location = new LatLng(Double.valueOf(weatherData.getCoord().getLat()), Double.valueOf(weatherData.getCoord().getLon()));
-        if(location != null && location.latitude > 0 && location.longitude > 0){
-            Marker marker = null;
+        if (weatherData != null && weatherData.getCoord() != null
+                && weatherData.getCoord().getLat() > 0 && weatherData.getCoord().getLon() > 0) {
+            LatLng location = new LatLng(Double.valueOf(weatherData.getCoord().getLat()), Double.valueOf(weatherData.getCoord().getLon()));
+            if (location != null && location.latitude > 0 && location.longitude > 0) {
+                Marker marker = null;
                 marker = googleMap.addMarker(new MarkerOptions()
                         .position(location)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)) //BitmapDescriptorFactory.fromResource(R.drawable.green_pin_marker)
                         .title(weatherData.getName())
                         .snippet(weatherData.getMain().getTemp()));
-            return marker;
+
+                return marker;
+            }
         }
         return null;
     }
