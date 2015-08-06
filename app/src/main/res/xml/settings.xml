@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:title="@string/pref_show_weather_near_me" >
+
+        <CheckBoxPreference
+            android:title="@string/pref_show"
+            android:defaultValue="true"
+            android:summary="@string/pref_show_weather_near_me"
+            android:key="PREF_SHOW_WEATHER_NEAR_ME" />
+    </PreferenceCategory>
+
+    <EditTextPreference
+        android:title="@string/pref_city_name"
+        android:defaultValue="Athens"
+        android:key="PREF_CITY" />
+
+    <PreferenceCategory
+        android:title="Units">
+        <CheckBoxPreference
+            android:title="Fahrenheit/Celsius"
+            android:defaultValue="false"
+            android:key="PREF_UNITS"
+            android:summaryOff="Results in Fahrenheit"
+            android:summaryOn="Results in Celsius"/>
+    </PreferenceCategory>
+</PreferenceScreen>

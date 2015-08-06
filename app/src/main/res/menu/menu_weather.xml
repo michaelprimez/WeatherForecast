@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:weatherforecast="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".WeatherActivity">
+
+    <item android:id="@+id/Itm_SearchAction_Menu"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/action_search"
+        weatherforecast:showAsAction="always|collapseActionView"
+        weatherforecast:actionLayout="@layout/my_search_action" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/action_settings"
+        weatherforecast:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_infos"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="@string/about"
+        weatherforecast:showAsAction="never"/>
+</menu>
+
+
+<!--<item android:id="@+id/action_settings" android:title="@string/action_settings"-->
+<!--android:orderInCategory="100" app:showAsAction="never" />-->

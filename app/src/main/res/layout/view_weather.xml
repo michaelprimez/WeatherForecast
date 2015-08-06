@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gr.escsoft.michaelkeskinidis.weatherforecast.modelview.WeatherView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/ImgWeatherImage"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:contentDescription="@string/movie_image"
+        android:scaleType="fitXY"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/TxtVwDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_toRightOf="@id/ImgWeatherImage"
+        android:layout_toEndOf="@id/ImgWeatherImage"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/TxtVwDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_below="@id/TxtVwDate"
+        android:layout_toRightOf="@id/ImgWeatherImage"
+        android:layout_toEndOf="@id/ImgWeatherImage"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
+
+    <TextView
+        android:id="@+id/TxtVwDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_below="@id/TxtVwDescription"
+        android:layout_toRightOf="@id/ImgWeatherImage"
+        android:layout_toEndOf="@id/ImgWeatherImage"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
+
+    <TextView
+        android:id="@+id/TxtVwCurrTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_below="@id/TxtVwDetails"
+        android:layout_toRightOf="@id/ImgWeatherImage"
+        android:layout_toEndOf="@id/ImgWeatherImage"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
+
+</gr.escsoft.michaelkeskinidis.weatherforecast.modelview.WeatherView>
