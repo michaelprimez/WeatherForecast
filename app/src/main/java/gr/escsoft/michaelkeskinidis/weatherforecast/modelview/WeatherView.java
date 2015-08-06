@@ -39,7 +39,7 @@ public class WeatherView extends RelativeLayout {
         this.weatherData = weather;
         if(this.weatherData != null) {
             new DownloadImageTask(mImgView).execute(weatherData.getWeather()[0].getIcon() + ".png");
-
+            mTxtVwDate.setText(weatherData.getDt_txt());
             mTxtVwDescription.setText(weatherData.getWeather()[0].getDescription().toUpperCase());
             mTxtVwDetails.setText("Min: " + weatherData.getMain().getTemp_min() + weatherData.getSymbol() + " - " +
                                   "Max: " + weatherData.getMain().getTemp_max() + weatherData.getSymbol());
