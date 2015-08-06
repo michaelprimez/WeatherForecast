@@ -1,5 +1,6 @@
 package gr.escsoft.michaelkeskinidis.weatherforecast.model;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -11,6 +12,7 @@ public class Weather implements Parcelable {
     private String main;
     private String description;
     private String icon;
+    private Bitmap bitmap;
 
     public Weather(){}
 
@@ -36,13 +38,13 @@ public class Weather implements Parcelable {
         this.description = description;
     }
 
-    public String getIcon() {
-        return icon;
-    }
+    public String getIcon() { return icon; }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
+    public void setIcon(String icon) { this.icon = icon; }
+
+    public Bitmap getBitmap() { return bitmap; }
+
+    public void setBitmap(Bitmap bitmap) { this.bitmap = bitmap; }
 
     public static final Parcelable.Creator<Weather> CREATOR = new Parcelable.Creator<Weather>() {
         public Weather createFromParcel(Parcel in) {

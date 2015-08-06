@@ -18,7 +18,9 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     WeakReference<ImageView> bmImage;
 
     public DownloadImageTask(ImageView bmImage) {
-        this.bmImage = new WeakReference<ImageView>(bmImage);
+        if (bmImage != null) {
+            this.bmImage = new WeakReference<ImageView>(bmImage);
+        }
     }
 
     @Override
@@ -46,7 +48,9 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap result) {
-        bmImage.get().setImageBitmap(result);
+        if (bmImage != null) {
+            bmImage.get().setImageBitmap(result);
+        }
     }
 
     private Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {

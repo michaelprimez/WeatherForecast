@@ -1,5 +1,6 @@
 package gr.escsoft.michaelkeskinidis.weatherforecast.model;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -57,17 +58,15 @@ public class WeatherData implements Parcelable {
         this.main = main;
     }
 
-    public Sys getSys() {
-        return sys;
-    }
+    public Sys getSys() { return sys; }
 
-    public void setSys(Sys sys) {
-        this.sys = sys;
-    }
+    public void setSys(Sys sys) { this.sys = sys; }
 
     public Long getDt() { return dt; }
 
     public void setDt(Long dt) { this.dt = dt; }
+
+    public void setDt(long dt) { this.dt = dt; }
 
     public static final Parcelable.Creator<WeatherData> CREATOR = new Parcelable.Creator<WeatherData>() {
         public WeatherData createFromParcel(Parcel in) {

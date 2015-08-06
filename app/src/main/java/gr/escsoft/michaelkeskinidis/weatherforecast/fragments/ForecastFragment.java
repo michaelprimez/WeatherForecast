@@ -59,8 +59,11 @@ public class ForecastFragment extends ListFragment implements WeatherFragmentPag
     public void onUpdateForecast(ForecastData forecastData) {
         this.forecastData.setCity(forecastData.getCity());
         this.forecastData.setList(forecastData.getList());
-//        weatherAdapter.clear();
+
+        int countBefore = weatherAdapter.getCount();
         weatherAdapter.addAll(this.forecastData.getList());
         weatherAdapter.notifyDataSetChanged();
+        int countAfter = weatherAdapter.getCount();
+        String t = "";
     }
 }

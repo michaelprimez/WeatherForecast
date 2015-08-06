@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gr.escsoft.michaelkeskinidis.weatherforecast.fragments.ForecastFragment;
+import gr.escsoft.michaelkeskinidis.weatherforecast.fragments.WeatherMapFragment;
 import gr.escsoft.michaelkeskinidis.weatherforecast.fragments.WeatherTodayFragment;
 import gr.escsoft.michaelkeskinidis.weatherforecast.model.ForecastData;
 import gr.escsoft.michaelkeskinidis.weatherforecast.model.WeatherData;
@@ -20,7 +21,7 @@ import gr.escsoft.michaelkeskinidis.weatherforecast.model.WeatherData;
 public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private String tabTitles[] = new String[] { "Today", "Forecast", "Map" };
-    final int PAGE_COUNT = 3;
+    public static final int PAGE_COUNT = 3;
     private Context context;
     private final static ForecastData forecastData = new ForecastData();
     private WeatherData todayWeatherData;
@@ -47,7 +48,7 @@ public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return ForecastFragment.newInstance(forecastData);
             case 2:
-                return ForecastFragment.newInstance(forecastData);
+                return WeatherMapFragment.newInstance(todayWeatherData);
         }
         return null;
     }

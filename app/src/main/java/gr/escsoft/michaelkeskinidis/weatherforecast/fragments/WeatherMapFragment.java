@@ -1,6 +1,9 @@
 package gr.escsoft.michaelkeskinidis.weatherforecast.fragments;
 
 import android.app.Dialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import gr.escsoft.michaelkeskinidis.weatherforecast.R;
+import gr.escsoft.michaelkeskinidis.weatherforecast.WeatherActivity;
+import gr.escsoft.michaelkeskinidis.weatherforecast.adapters.MarkerWeatherWindowAdapter;
 import gr.escsoft.michaelkeskinidis.weatherforecast.adapters.WeatherFragmentPagerAdapter;
 import gr.escsoft.michaelkeskinidis.weatherforecast.model.WeatherData;
 
@@ -15,14 +20,54 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by Michael on 8/5/2015.
  */
 public class WeatherMapFragment extends Fragment implements WeatherFragmentPagerAdapter.OnUpdateMapFragmentListener {
 
+    private static final String ARG_WEATHER_DATA = "ARG_WEATHER_DATA";
     android.app.Fragment fr;
     private GoogleMap googleMap;
+    private WeatherData weatherData;
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param weatherData Parameter 1.
+     * @return A new instance of fragment WeatherTodayFragment.
+     */
+    public static WeatherMapFragment newInstance(WeatherData weatherData) {
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_WEATHER_DATA, weatherData);
+        WeatherMapFragment fragment = new WeatherMapFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public WeatherMapFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            weatherData = getArguments().getParcelable(ARG_WEATHER_DATA);
+        }
+    }
+
+    public WeatherData getWeatherData(){
+        return weatherData;
+    }
 
     @Nullable
     @Override
@@ -39,19 +84,68 @@ public class WeatherMapFragment extends Fragment implements WeatherFragmentPager
             googleMap = (GoogleMap)((MapFragment)fr).getMap();
             if (googleMap != null) {
                 googleMap.setMyLocationEnabled(true);
-//                MarkerInfoWindowAdapter markerInfoWindowAdapter = new MarkerInfoWindowAdapter(this);
-//                googleMap.setInfoWindowAdapter(markerInfoWindowAdapter);
-//                googleMap.setOnInfoWindowClickListener(markerInfoWindowAdapter);
-//                ((MainActivity)getActivity()).getLocationChangeListener().setGoogleMap(googleMap);
+                MarkerWeatherWindowAdapter markerInfoWindowAdapter = new MarkerWeatherWindowAdapter(this);
+                googleMap.setInfoWindowAdapter(markerInfoWindowAdapter);
+                ((WeatherActivity)getActivity()).getLocationChangeListener().setGoogleMap(googleMap);
             }
         }
 
         return rootView;
-//        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onUpdateMap(WeatherData weatherData) {
+        this.weatherData = weatherData;
 
+        new AsyncTask<String, Void, Bitmap>(){
+            @Override
+            protected Bitmap doInBackground(String... params) {
+                String urldisplay = "http://openweathermap.org/img/w/" + params[0];
+                Bitmap mIcon = null;
+                InputStream in = null;
+                try {
+                    in = new java.net.URL(urldisplay).openStream();
+                    mIcon = BitmapFactory.decodeStream(in);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }finally {
+                    if(in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                return mIcon;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap result) {
+                WeatherMapFragment.this.weatherData.getWeather()[0].setBitmap(result);
+            }
+        }.execute(weatherData.getWeather()[0].getIcon() + ".png");
+
+        googleMap.clear();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setMarker();
+            }
+        });
+    }
+
+    public Marker setMarker(){
+        LatLng location = new LatLng(Double.valueOf(weatherData.getCoord().getLat()), Double.valueOf(weatherData.getCoord().getLon()));
+        if(location != null && location.latitude > 0 && location.longitude > 0){
+            Marker marker = null;
+                marker = googleMap.addMarker(new MarkerOptions()
+                        .position(location)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)) //BitmapDescriptorFactory.fromResource(R.drawable.green_pin_marker)
+                        .title(weatherData.getName())
+                        .snippet(weatherData.getMain().getTemp()));
+            return marker;
+        }
+        return null;
     }
 }

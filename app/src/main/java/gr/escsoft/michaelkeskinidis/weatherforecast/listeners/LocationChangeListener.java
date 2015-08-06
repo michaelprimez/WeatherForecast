@@ -39,8 +39,15 @@ public class LocationChangeListener implements LocationListener {
     public void onLocationChanged(Location location) {
 
         if(location != null){
-            if(mWrActivity != null && mWrActivity.get() != null && mWrActivity.get() instanceof WeatherActivity){
+            if(mWrActivity != null && mWrActivity.get() instanceof WeatherActivity){
                 ((WeatherActivity)mWrActivity.get()).setLocation(location);
+            }
+            if(mWrGoogleMap != null && mWrGoogleMap.get() != null){
+                float zoom = mWrGoogleMap.get().getCameraPosition().zoom;
+                // Move the camera instantly with a zoom of 15.
+                mWrGoogleMap.get().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoom));
+                // Zoom in, animating the camera.
+                mWrGoogleMap.get().animateCamera(CameraUpdateFactory.zoomTo(zoom), 2000, null);
             }
         }
     }

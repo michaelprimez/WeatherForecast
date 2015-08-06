@@ -1,14 +1,18 @@
 package gr.escsoft.michaelkeskinidis.weatherforecast;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.view.ViewPager;
 import android.support.design.widget.TabLayout;
 import android.os.Bundle;
@@ -67,12 +71,19 @@ public class WeatherActivity extends AppCompatActivity
         apiKey = getResources().getString(R.string.openweather_api_key);
 
         loadPrefs();
+        setupView();
+        updateWeatherBasedOnCriteria();
+
+    }
+
+    private void setupView(){
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         frgPageAdapter = new WeatherFragmentPagerAdapter(getSupportFragmentManager(),
-                                                         WeatherActivity.this,
-                                                         forecastData, todayWeatherData);
+                WeatherActivity.this,
+                forecastData, todayWeatherData);
         viewPager.setAdapter(frgPageAdapter);
+        viewPager.setOffscreenPageLimit(WeatherFragmentPagerAdapter.PAGE_COUNT);
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
@@ -95,11 +106,13 @@ public class WeatherActivity extends AppCompatActivity
                 location = locationManager.getLastKnownLocation(provider);
 
                 locationChangeListener = new LocationChangeListener(this, null);
-                locationManager.requestLocationUpdates(provider, 2500, Float.parseFloat("2.0"), locationChangeListener);
+                locationManager.requestLocationUpdates(provider, 10000, Float.parseFloat("100.0"), locationChangeListener);
                 setLocation(locationManager.getLastKnownLocation(provider));
             }
         }
+    }
 
+    public void updateWeatherBasedOnCriteria(){
         if ((TextUtils.isEmpty(mStrPrefCity) || mbShowWeatherNearMe) && getLocation() != null)  {
             callWeatherAPILonLat();
         } else if (!TextUtils.isEmpty(mStrPrefCity)){
@@ -116,6 +129,10 @@ public class WeatherActivity extends AppCompatActivity
 
     public synchronized Location getLocation(){
         return this.location;
+    }
+
+    public LocationChangeListener getLocationChangeListener(){
+        return locationChangeListener;
     }
 
     @Override
@@ -149,12 +166,50 @@ public class WeatherActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_PREF_RESULT){
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            if (TextUtils.isEmpty(mStrPrefCity) || mbShowWeatherNearMe) {
-                callWeatherAPILonLat();
-            } else if (!TextUtils.isEmpty(mStrPrefCity)){
-                callWeatherAPICity();
+            ShowEnableLocationDialog(mbShowWeatherNearMe);
+            updateWeatherBasedOnCriteria();
+        }
+    }
+
+    private void ShowEnableLocationDialog(boolean show){
+        if (show && !isLocationEnabled(this)){
+            // notify user
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage(this.getResources().getString(R.string.gps_network_not_enabled));
+            dialog.setPositiveButton(this.getResources().getString(R.string.open_location_settings),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+
+                            Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            WeatherActivity.this.startActivity(myIntent);
+                        }
+                    });
+            dialog.setNegativeButton(this.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+
+                }
+            });
+            dialog.show();
+        }
+    }
+    public static boolean isLocationEnabled(Context context) {
+        int locationMode = 0;
+        String locationProviders;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+                return false;
             }
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+        }else{
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            return !TextUtils.isEmpty(locationProviders);
         }
     }
 

@@ -17,6 +17,22 @@ public class Coord implements Parcelable {
         this.lat = lat;
     }
 
+    public float getLon() {
+        return lon;
+    }
+
+    public void setLon(float lon) {
+        this.lon = lon;
+    }
+
+    public float getLat() {
+        return lat;
+    }
+
+    public void setLat(float lat) {
+        this.lat = lat;
+    }
+
     public static final Parcelable.Creator<Coord> CREATOR = new Parcelable.Creator<Coord>() {
         public Coord createFromParcel(Parcel in) {
             return new Coord(in);

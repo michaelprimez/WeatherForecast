@@ -22,4 +22,9 @@
     <string name="movie_image"> Weather Image</string>
     <string name="place_not_found">Sorry, no weather data found.</string>
     <string name="openweather_api_key">a7662fc64142a9aa42bb45916378b353</string>
+    <string name="gps_network_not_enabled" > The GPS is not enable</string>
+    <string name="open_location_settings" > Enable GPS </string>
+    <string name="cancel" > Cancel </string>
+    <string name="created_by">Created By Michael</string>
+    <string name="info">A Simple Weather Forecast Application for demonstration purposes</string>
 </resources>

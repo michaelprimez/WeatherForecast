@@ -5,6 +5,9 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
 import gr.escsoft.michaelkeskinidis.weatherforecast.R;
 import gr.escsoft.michaelkeskinidis.weatherforecast.model.ForecastWeatherData;
 import gr.escsoft.michaelkeskinidis.weatherforecast.model.WeatherData;

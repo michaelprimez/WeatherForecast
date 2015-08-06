@@ -3,4 +3,21 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/TxtVwCreatedBy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/created_by"
+        android:layout_marginTop="50dp" />
+
+    <TextView
+        android:id="@+id/TxtVwInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/info"
+        android:layout_marginLeft="36dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="36dp" />
 </LinearLayout>

@@ -60,7 +60,6 @@ public class WeatherTodayFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             weatherData = getArguments().getParcelable(ARG_TODAY_WEATHER_DATA);
-//            weatherFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/weathericons.ttf");
         }
     }
 
