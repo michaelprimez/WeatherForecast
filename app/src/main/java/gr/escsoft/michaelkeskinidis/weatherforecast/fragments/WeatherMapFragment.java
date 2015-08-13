@@ -15,6 +15,7 @@ import gr.escsoft.michaelkeskinidis.weatherforecast.R;
 import gr.escsoft.michaelkeskinidis.weatherforecast.WeatherActivity;
 import gr.escsoft.michaelkeskinidis.weatherforecast.adapters.MarkerWeatherWindowAdapter;
 import gr.escsoft.michaelkeskinidis.weatherforecast.adapters.WeatherFragmentPagerAdapter;
+import gr.escsoft.michaelkeskinidis.weatherforecast.eventbus.BusProvider;
 import gr.escsoft.michaelkeskinidis.weatherforecast.model.WeatherData;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +40,14 @@ public class WeatherMapFragment extends Fragment implements WeatherFragmentPager
     android.app.Fragment fr;
     private GoogleMap googleMap;
     private WeatherData weatherData;
+
+    private static class ImageAvailableEvent {
+        public final Bitmap image;
+
+        ImageAvailableEvent(Bitmap image) {
+            this.image = image;
+        }
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -56,6 +66,28 @@ public class WeatherMapFragment extends Fragment implements WeatherFragmentPager
 
     public WeatherMapFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        BusProvider.getInstance().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        BusProvider.getInstance().unregister(this);
+    }
+
+    @Subscribe
+    public void onImageAvailable(ImageAvailableEvent event) {
+        if (WeatherMapFragment.this.weatherData != null &&
+                WeatherMapFragment.this.weatherData.getWeather() != null &&
+                WeatherMapFragment.this.weatherData.getWeather().length > 0 &&
+                WeatherMapFragment.this.weatherData.getWeather()[0] != null) {
+            WeatherMapFragment.this.weatherData.getWeather()[0].setBitmap(event.image);
+        }
     }
 
     @Override
@@ -131,7 +163,8 @@ public class WeatherMapFragment extends Fragment implements WeatherFragmentPager
                                 WeatherMapFragment.this.weatherData.getWeather() != null &&
                                 WeatherMapFragment.this.weatherData.getWeather().length > 0 &&
                                 WeatherMapFragment.this.weatherData.getWeather()[0] != null) {
-                            WeatherMapFragment.this.weatherData.getWeather()[0].setBitmap(result);
+                            //WeatherMapFragment.this.weatherData.getWeather()[0].setBitmap(result);
+                            BusProvider.getInstance().post(new ImageAvailableEvent(result));
                         }
                     }
                 }
