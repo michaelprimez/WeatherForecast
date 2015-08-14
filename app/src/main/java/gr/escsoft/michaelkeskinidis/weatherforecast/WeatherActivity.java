@@ -425,9 +425,13 @@ public class WeatherActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.getString(PREF_CITY, mStrPrefCity);
-        prefs.getBoolean(PREF_UNITS, mbIsInCelsius);
-        prefs.getBoolean(PREF_SHOW_WEATHER_NEAR_ME, mbShowWeatherNearMe);
+        SharedPreferences.Editor edt = prefs.edit();
+
+        edt.putString(PREF_CITY, mStrPrefCity);
+        edt.putBoolean(PREF_UNITS, mbIsInCelsius);
+        edt.putBoolean(PREF_SHOW_WEATHER_NEAR_ME, mbShowWeatherNearMe);
+        edt.commit();
+
         prefs.unregisterOnSharedPreferenceChangeListener(this);
         super.onDestroy();
     }
