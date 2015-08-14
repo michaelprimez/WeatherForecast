@@ -65,4 +65,9 @@ public class ForecastFragment extends ListFragment implements WeatherFragmentPag
         weatherAdapter.addAll(this.forecastData.getList());
         weatherAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void onUpdateForecastError(String message) {
+
+    }
 }

@@ -110,4 +110,9 @@ public class WeatherTodayFragment extends Fragment
             }
         }
     }
+
+    @Override
+    public void onUpdateTodayWeatherError(String message) {
+        mTxtVwCity.setText(message);
+    }
 }

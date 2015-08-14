@@ -333,7 +333,8 @@ public class WeatherActivity extends AppCompatActivity
 
             @Override
             public void failure(RetrofitError error) {
-                String t = error.toString();
+
+                frgPageAdapter.updateTodayWeatherDataError(error.toString());
             }
         });
 
@@ -349,7 +350,7 @@ public class WeatherActivity extends AppCompatActivity
 
             @Override
             public void failure(RetrofitError error) {
-                String t = error.toString();
+                frgPageAdapter.updateForecastDataError(error.toString());
             }
         });
     }
@@ -376,7 +377,8 @@ public class WeatherActivity extends AppCompatActivity
 
                 @Override
                 public void failure(RetrofitError error) {
-                    String t = error.toString();
+
+                    frgPageAdapter.updateTodayWeatherDataError(error.toString());
                 }
             });
 
@@ -392,7 +394,8 @@ public class WeatherActivity extends AppCompatActivity
 
                 @Override
                 public void failure(RetrofitError error) {
-                    String t = error.toString();
+
+                    frgPageAdapter.updateForecastDataError(error.toString());
                 }
             });
         }

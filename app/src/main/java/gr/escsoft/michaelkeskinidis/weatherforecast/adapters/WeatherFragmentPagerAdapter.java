@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.text.TextUtils;
 
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
     private Context context;
     private final static ForecastData forecastData = new ForecastData();
     private WeatherData todayWeatherData;
+    private String mStrError;
 
     public WeatherFragmentPagerAdapter(FragmentManager fm, Context context,
                                        ForecastData forecastData, WeatherData todayWeatherData) {
@@ -60,20 +62,30 @@ public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
 
     public interface OnUpdateTodayWeatherFragmentListener {
         public void onUpdateTodayWeather(WeatherData weatherData);
+        public void onUpdateTodayWeatherError(String message);
     }
 
     public interface OnUpdateForecastFragmentListener {
         public void onUpdateForecast(ForecastData forecastData);
+        public void onUpdateForecastError(String message);
     }
 
     public interface OnUpdateMapFragmentListener {
         public void onUpdateMap(WeatherData weatherData);
+        public void onUpdateMapError(String message);
     }
 
     public void updateTodayWeatherData(WeatherData weatherData){
         if (weatherData != null) {
+            mStrError = null;
             this.todayWeatherData = weatherData;
             notifyDataSetChanged();
+        }
+    }
+
+    public void updateTodayWeatherDataError(String message){
+        if (!TextUtils.isEmpty(message)) {
+            mStrError = message;
         }
     }
 
@@ -85,10 +97,22 @@ public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
         }
     }
 
+    public void updateForecastDataError(String message){
+        if (!TextUtils.isEmpty(message)) {
+
+        }
+    }
+
     public void updateMapData(WeatherData weatherDataList){
         if (weatherDataList != null) {
             this.todayWeatherData = weatherDataList;
             notifyDataSetChanged();
+        }
+    }
+
+    public void updateMapDataError(String message){
+        if (!TextUtils.isEmpty(message)) {
+
         }
     }
 

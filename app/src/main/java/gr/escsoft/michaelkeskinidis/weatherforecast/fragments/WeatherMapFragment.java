@@ -182,6 +182,10 @@ public class WeatherMapFragment extends Fragment implements WeatherFragmentPager
         });
     }
 
+    @Override
+    public void onUpdateMapError(String message) {
+
+    }
     public Marker setMarker(){
         if (weatherData != null && weatherData.getCoord() != null
                 && weatherData.getCoord().getLat() > 0 && weatherData.getCoord().getLon() > 0) {
