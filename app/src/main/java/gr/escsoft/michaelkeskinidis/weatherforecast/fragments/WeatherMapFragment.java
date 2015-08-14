@@ -93,6 +93,7 @@ public class WeatherMapFragment extends Fragment implements WeatherFragmentPager
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             weatherData = getArguments().getParcelable(ARG_WEATHER_DATA);
         }
@@ -171,7 +172,8 @@ public class WeatherMapFragment extends Fragment implements WeatherFragmentPager
             }.execute(weatherData.getWeather()[0].getIcon() + ".png");
         }
 
-        googleMap.clear();
+        if (googleMap != null)
+            googleMap.clear();
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -186,6 +188,7 @@ public class WeatherMapFragment extends Fragment implements WeatherFragmentPager
             LatLng location = new LatLng(Double.valueOf(weatherData.getCoord().getLat()), Double.valueOf(weatherData.getCoord().getLon()));
             if (location != null && location.latitude > 0 && location.longitude > 0) {
                 Marker marker = null;
+                if (googleMap != null)
                 marker = googleMap.addMarker(new MarkerOptions()
                         .position(location)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)) //BitmapDescriptorFactory.fromResource(R.drawable.green_pin_marker)

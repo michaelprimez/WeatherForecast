@@ -29,6 +29,7 @@ import android.widget.EditText;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.MapsInitializer;
 
 import java.util.Locale;
 import java.util.Timer;
@@ -80,7 +81,7 @@ public class WeatherActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         apiKey = getResources().getString(R.string.openweather_api_key);
-
+        MapsInitializer.initialize(getApplicationContext());
         loadPrefs();
         setupView();
         updateWeatherBasedOnCriteria();
